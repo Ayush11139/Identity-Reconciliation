@@ -19,15 +19,15 @@ async function queryFromDB(insertSql, queryArray) {
     let queryArray = [];
     if (email && phoneNumber) {
       sql =
-        "SELECT * FROM USERS WHERE linkPrecedence = ? AND (email = ? OR phoneNumber = ?) ORDER BY createdAt";
+        "SELECT * FROM users WHERE linkPrecedence = ? AND (email = ? OR phoneNumber = ?) ORDER BY createdAt";
       queryArray = [...queryArray, email, phoneNumber];
     } else if (email) {
       sql =
-        "SELECT * FROM USERS WHERE linkPrecedence = ? AND email = ? ORDER BY createdAt";
+        "SELECT * FROM users WHERE linkPrecedence = ? AND email = ? ORDER BY createdAt";
       queryArray = [...queryArray, email];
     } else if (phoneNumber) {
       sql =
-        "SELECT * FROM USERS WHERE linkPrecedence = ? AND phoneNumber = ? ORDER BY createdAt";
+        "SELECT * FROM users WHERE linkPrecedence = ? AND phoneNumber = ? ORDER BY createdAt";
       queryArray = [...queryArray, phoneNumber];
     }
   
@@ -46,7 +46,7 @@ async function queryFromDB(insertSql, queryArray) {
       };
     }
   
-    let newSql = `SELECT * FROM USERS WHERE ID IN (?) ORDER BY createdAt`;
+    let newSql = `SELECT * FROM users WHERE id IN (?) ORDER BY createdAt`;
     const linkedPrimaryEntries = await queryFromDB(newSql, linkedPrimaryIds);
     return {
       primaryEntries: primaryEntries,
@@ -68,7 +68,7 @@ async function queryFromDB(insertSql, queryArray) {
     const secondaryIdList = [];
 
     if (primaryEntries.length > 1 && secondaryEntries.length === 0) {
-      let sql = `UPDATE USERS SET linkPrecedence = ?, linkedId = ? WHERE ID = ?`;
+      let sql = `UPDATE users SET linkPrecedence = ?, linkedId = ? WHERE id = ?`;
       let queryArray = [
         "secondary",
         primaryEntries[0].id,
@@ -98,7 +98,7 @@ async function queryFromDB(insertSql, queryArray) {
     }
 
     if (primaryEntries.length > 0 && secondaryEntries.length === 0) {
-      let sql = `SELECT * FROM USERS WHERE linkedId = ? ORDER BY createdAt ASC`;
+      let sql = `SELECT * FROM users WHERE linkedId = ? ORDER BY createdAt ASC`;
       let queryArray = [primaryEntries[0].id];
       const result = await queryFromDB(sql, queryArray);
       if (result) {
@@ -107,7 +107,7 @@ async function queryFromDB(insertSql, queryArray) {
     }
 
     if (primaryEntries.length === 0 && linkedPrimaryEntries.length === 0) {
-      let insertSql = `INSERT INTO USERS(email,phoneNumber,linkPrecedence) VALUES(?,?,?)`;
+      let insertSql = `INSERT INTO users(email,phoneNumber,linkPrecedence) VALUES(?,?,?)`;
       let queryArray = [email, phoneNumber, "primary"];
       const result = await queryFromDB(insertSql, queryArray);
       const response = {
@@ -122,11 +122,11 @@ async function queryFromDB(insertSql, queryArray) {
       return;
     } else if (primaryEntries.length > 0 && email && phoneNumber) {
       const checkQuery =
-        "SELECT * FROM USERS WHERE linkPrecedence = ? AND (phoneNumber = ? OR email = ?) ORDER BY createdAt";
+        "SELECT * FROM users WHERE linkPrecedence = ? AND (phoneNumber = ? OR email = ?) ORDER BY createdAt";
       const queryArray = ["secondary", phoneNumber, email];
       const result = await queryFromDB(checkQuery, queryArray);
       if (result.length === 0) {
-        let insertSql = `INSERT INTO USERS(email,phoneNumber,linkPrecedence,linkedId) VALUES(?,?,?,?)`;
+        let insertSql = `INSERT INTO users(email,phoneNumber,linkPrecedence,linkedId) VALUES(?,?,?,?)`;
         let queryArray = [
           email,
           phoneNumber,
