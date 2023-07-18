@@ -1,6 +1,6 @@
 import mysql from "mysql";
 const db = mysql.createConnection({
-    host: "localhost",
+    host: process.env.DB_HOST,
     user: "root",
     password: "",
     database: "Contacts",

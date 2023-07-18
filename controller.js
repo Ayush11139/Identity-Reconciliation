@@ -192,7 +192,6 @@ async function queryFromDB(insertSql, queryArray) {
         secondaryContactIds: secondaryIdList,
       },
     };
-    console.log(result);
     res.json(response);
   });
   }
