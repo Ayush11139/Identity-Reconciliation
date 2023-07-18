@@ -13,3 +13,5 @@ app.use("/", router);
 app.listen(process.env.PORT, () => {
   console.log("app-started");
 });
+
+export default app;
